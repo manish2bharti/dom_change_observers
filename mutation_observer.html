@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset='utf-8'>
+   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+   <title>Mutation Observer</title>
+   <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+   <h1>Mutation Observer</h1>
+   <p>The MutationObserver interface provides the ability to watch for changes being made to the DOM tree. </p>
+   <p>
+      <strong>Constructor</strong>:
+      Creates and returns a new MutationObserver which will invoke a specified callback function when DOM changes occur.
+   </p>
+   <p>
+      <strong>Methods</strong>:
+      <ul>
+         <li><strong>disconnect(): </strong>Stops the MutationObserver instance from receiving further notifications until and unless observe() is called again.</li>
+         <li><strong>observe()</strong>Configures the MutationObserver to begin receiving notifications through its callback function when DOM changes matching the given options occur.</li>
+         <li><strong>takeRecords()</strong>Removes all pending notifications from the MutationObserver's notification queue and returns them in a new Array of MutationRecord objects.</li>
+      </ul>
+   </p>
+   <hr />
+   <p><strong>Example</strong> </p>
+   <ul class="summary">
+      <li>Lets you reat to change in the DOM</li>
+      <li>
+         Example
+         <ul>
+            <li>an attribute or text has changed on an element</li>
+            <li>another element was added or removed from a parent element</li>
+         </ul>
+      </li>
+      <li>Helpful when trying to work with liberaries that dont provide their own events.</li>
+   </ul>
+
+   <script>
+      const myList = document.querySelector('.summary');
+      /*
+         1. Making a new MutationObserver object
+         2. Tell it what to observe
+         3. What to do with the observe changes/mutations
+      */
+
+      // ---------- Example 1 --------------------
+      // Set some rendomIt in list
+      // const observe = new MutationObserver(mutations => {
+      //    console.log(mutations)
+      // });
+      // observe.observe(myList, {
+      //    attributes: true
+      // });
+      // setTimeout(() => {
+      //    myList.setAttribute('id', 'someRandomId')
+      // },1000)
+
+      // ---------- Example 2 --------------------
+      // get the change attribute value and add new class in list
+      // const observe = new MutationObserver(mutations => {
+      //    mutations.forEach(record => {
+      //       console.log(record);
+
+      //       if(record.type === 'attributes'){
+      //          const changeAttrName = record.attributeName;
+      //          const newValue = record.target.getAttribute(changeAttrName);
+      //          console.log(`Attribute changed! new value for '${changeAttrName}' : '${newValue}'`);
+      //       }
+      //    })
+      // });
+
+      // observe.observe(myList, {
+      //    attributes: true,
+      //    attributeFilter: ['class'],
+      //    attributeOldValue: true
+      // });
+
+      // setTimeout(() => {
+      //    myList.setAttribute('id', 'someRandomId')
+      //    myList.setAttribute('class', 'summary another-class')
+      // },1000)
+
+      // ---------- Example 3 --------------------
+      // list item removed from first
+      const observe = new MutationObserver(mutations => {
+         mutations.forEach(record => {
+            console.log(record)
+
+            if(record.addedNodes.length > 0){
+               console.log(`Number of nodes added: ${record.addedNodes.length}`)
+            }
+
+            if(record.removedNodes.length > 0){
+               console.log(`Number of nodes added: ${record.removedNodes.length}`)
+            }
+         })
+      });
+
+      observe.observe(myList, {
+         childList: true
+      });
+
+      observe.disconnect();
+
+      setTimeout(() => {
+         // list item removed from first
+         myList.removeChild(myList.firstElementChild);
+         const newLi = document.createElement('li');
+         newLi.textContent = "some changes"
+         myList.appendChild(newLi)
+
+
+         // change content for first element
+         myList.firstElementChild.textContent = "something changed";
+      },1000)
+   </script>
+</body>
+</html>
